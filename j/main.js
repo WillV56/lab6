@@ -6,6 +6,21 @@
 //it's easier to read if we put each step in its own line,
 //that's why the periods start the then lines.
 
+function init( ) {
+
+    let house = document.getElementById('house');
+
+    houses.forEach(item => {
+        let house = document.getElementById('house');
+        const option = document.createElement('OPTION');
+        option.value = item.code;
+        option.innterText = item.name;
+        house.append(option);
+    });
+
+}
+
+
 fetch("houses.json")
     .then((response) => response.json())
     .then((data) => {
@@ -31,3 +46,44 @@ fetch("houses.json")
     })
     .catch((err) => console.log("Oops!", err));
     //this only runs if there is an error during the above process
+
+
+    const houses = [
+        {
+            "code": "ST",
+            "name": "Stark",
+            "members": ["Eddard", "Catelyn", "Robb", "Sansa", "Arya", "Jon Snow"]
+        },
+        {
+            "code": "LA",
+            "name": "Lannister",
+            "members": ["Tywin", "Cersei", "Jaime", "Tyrion"]
+        }, 
+        {
+            "code": "BA",
+            "name": "Baratheon",
+            "members": ["Robert", "Stannis", "Renly"]
+        },
+        {
+            "code": "TA",
+            "name": "Targaryen",
+            "members": ["Aerys", "Daenerys", "Viserys"]
+        } 
+    ]
+
+
+
+    const getCharacters = houseCode => {
+        switch (houseCode) {
+            case "ST":
+                return ["Eddard", "Catelyn", "Robb", "Sansa", "Arya", "Jon Snow"];
+            case "LA":
+                return ["Tywin", "Cersei", "Jaime", "Tyrion"];
+            case "BA":
+                return ["Robert", "Stannis", "Renly"];
+            case "TA":
+                return ["Aerys", "Daenerys", "Viserys"];
+        }
+         
+        
+    }
