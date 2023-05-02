@@ -1,89 +1,64 @@
+//write your page loading script here. Populate the dropdown with the GOT houses.
+document.addEventListener("DOMContentLoaded", init);
 
-//This code does NOT create any global variables.
-//Promises can be chained together, with the previous promise
-// passing its results to the next one in the chain.
-// the format is: fetch().then().then().catch()
-//it's easier to read if we put each step in its own line,
-//that's why the periods start the then lines.
+function init() {
+  let houses = [];
 
-function init( ) {
-
-    let house = document.getElementById('house');
-
-    houses.forEach(item => {
-        let house = document.getElementById('house');
-        const option = document.createElement('OPTION');
-        option.value = item.code;
-        option.innterText = item.name;
-        house.append(option);
-    });
-
-}
-
-
-fetch("houses.json")
+  // get external json data and convert it into a JS array
+  fetch("https://assets.codepen.io/2538893/houses.json")
     .then((response) => response.json())
     .then((data) => {
-        //create a temp holder to append all the html generated inside the forEach iterator
-        let html = "";
-
-        //the argument "house" passed to the arrow function
-        //holds each item in the array in turn.
-        data.forEach((house) => {
-            let family = house.members.join(" | ");
-
-            // generate the html snippet for one array item
-            //to be added to the "html" temp holder.
-            let objInfo = `<p class="house">${house.name}</p>
-        <p class="folks">${family}</p>`;
-            html += objInfo;
-        });
-
-        //make a reference to the html container where
-        //the info will be displayed.
-        const container = document.querySelector("#container");
-        container.innerHTML = html;
+      houses = data;
+      // loop through the houses array and populate the
+      // dropdown with the house names and codes.
+      houses.forEach((item) => {
+        const option = document.createElement("OPTION");
+        option.value = item.code;
+        option.innerText = item.name;
+        house.appendChild(option);
+      });
     })
-    .catch((err) => console.log("Oops!", err));
-    //this only runs if there is an error during the above process
+    .catch((err) => {
+      console.log("oops ", err.message);
+    });
 
+  // DOM ref to the select dropdown
+  let house = document.getElementById("house");
 
-    const houses = [
-        {
-            "code": "ST",
-            "name": "Stark",
-            "members": ["Eddard", "Catelyn", "Robb", "Sansa", "Arya", "Jon Snow"]
-        },
-        {
-            "code": "LA",
-            "name": "Lannister",
-            "members": ["Tywin", "Cersei", "Jaime", "Tyrion"]
-        }, 
-        {
-            "code": "BA",
-            "name": "Baratheon",
-            "members": ["Robert", "Stannis", "Renly"]
-        },
-        {
-            "code": "TA",
-            "name": "Targaryen",
-            "members": ["Aerys", "Daenerys", "Viserys"]
-        } 
-    ]
+  // display a list of the house members
+  // when the select list has changed.
+  house.addEventListener("change", (e) => {
+    //get the house code from the select
+    const code = e.target.value;
+    let members = [];
 
+    // loop through houses array
+    // check for a matching house code,
+    // grab the members of that house
+    houses.forEach((item) => {
+      if (item.code === code) {
+        members = item.members;
+      }
+    });
 
+    // DOM ref for ul to display members
+    const container = document.getElementById("characters");
 
-    const getCharacters = houseCode => {
-        switch (houseCode) {
-            case "ST":
-                return ["Eddard", "Catelyn", "Robb", "Sansa", "Arya", "Jon Snow"];
-            case "LA":
-                return ["Tywin", "Cersei", "Jaime", "Tyrion"];
-            case "BA":
-                return ["Robert", "Stannis", "Renly"];
-            case "TA":
-                return ["Aerys", "Daenerys", "Viserys"];
-        }
-         
-        
-    }
+    // clear out any previous member names
+    container.innerHTML = "";
+
+    // handle if no house selected
+    if (members.length === 0) {
+      let item = document.createElement("LI");
+      item.innerText = "No House Selected";
+      container.appendChild(item);
+    } else {
+      // create the li's and append to the ul
+      members.forEach((person) => {
+        let item = document.createElement("LI");
+        item.innerText = person;
+        container.appendChild(item);
+      });
+    } // end if/else
+  }); //end addEventListener - change
+} //end init
